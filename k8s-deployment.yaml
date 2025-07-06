@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-tasks
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flask-tasks
+  template:
+    metadata:
+      labels:
+        app: flask-tasks
+    spec:
+      containers:
+      - name: flask-tasks
+        image: docker.io/yourusername/flask-tasks:latest
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-tasks
+spec:
+  selector:
+    app: flask-tasks
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer
